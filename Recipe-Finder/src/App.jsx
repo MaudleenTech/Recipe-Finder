@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import HomePage from "./pages/HomePage";
-import SearchResults from "./pages/SearchResults";
-import RecipeDetails from "./pages/RecipeDetails";
+import HomePage from "./components/HomePage";
+import SearchResults from "./components/SearchResults";
+import RecipeDetails from "./components/RecipeDetails";
 
 function App() {
   return (
