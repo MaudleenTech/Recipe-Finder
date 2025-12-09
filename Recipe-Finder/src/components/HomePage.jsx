@@ -7,6 +7,7 @@ const HomePage = () => {
   const navigate = useNavigate();
   const [query, setQuery] = useState("");
   const [featuredRecipes, setFeaturedRecipes] = useState([]);
+  const [trendingRecipes, setTrendingRecipes] = useState([]);
 
   // Fetch featured recipes from TheMealDB
   useEffect(() => {
@@ -14,6 +15,25 @@ const HomePage = () => {
       .then((res) => res.json())
       .then((data) => setFeaturedRecipes(data.meals.slice(0, 3))) // take first 3 meals
       .catch((err) => console.error(err));
+  }, []);
+  // Fetch Trending Recipes
+  useEffect(() => {
+    const fetchTrending = async () => {
+      try {
+        const promises = [
+          fetch("https://www.themealdb.com/api/json/v1/1/random.php").then((r) => r.json()),
+          fetch("https://www.themealdb.com/api/json/v1/1/random.php").then((r) => r.json()),
+          fetch("https://www.themealdb.com/api/json/v1/1/random.php").then((r) => r.json()),
+        ];
+
+        const results = await Promise.all(promises);
+
+        setTrendingRecipes(results.map((meal) => meal.meals[0]));
+      } catch (error) {
+        console.error("Error fetching trending meals:", error);
+      }
+    };
+    fetchTrending();
   }, []);
 
   const handleSearch = (e) => {
@@ -76,6 +96,21 @@ const HomePage = () => {
               image={recipe.strMealThumb}
               title={recipe.strMeal}
               description="Delicious meal from TheMealDB"
+            />
+          ))}
+        </div>
+      </section>
+
+      {/* Trending Recipes Section */}
+      <section className="container mx-auto pb-16 px-6">
+        <h2 className="text-3xl font-bold text-gray-800 mb-8">Trending Recipes</h2>
+        <div className="grid gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+          {trendingRecipes.map((meal) => (
+            <CategoryCard
+              key={meal.idMeal}
+              image={meal.strMealThumb}
+              title={meal.strMeal}
+              description="Currently trending recipe"
             />
           ))}
         </div>
