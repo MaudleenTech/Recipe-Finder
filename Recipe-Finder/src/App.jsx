@@ -6,6 +6,7 @@ import SearchResults from "./components/SearchResults";
 import RecipeDetails from "./components/RecipeDetails";
 import AboutUs from "./components/AboutUs";
 import Contact from "./components/Contact";
+import Terms from "./components/Terms";
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
         <Route path="/recipe/:id" element={<RecipeDetails />} />
         <Route path="/about" element={<AboutUs />} />
         <Route path="/contact" element={<Contact />} />
+        <Route path="/terms" element={<Terms />} />
       </Routes>
 
       <Footer />

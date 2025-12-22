@@ -1,6 +1,12 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Footer = () => {
+  const navigate = useNavigate();
+
+  const goToCategory = (category) => {
+    navigate("/search", { state: { query: category } });
+  };
+
   return (
     <footer className="bg-white border-t mt-10 py-10 px-6">
       <div className="container mx-auto grid grid-cols-1 md:grid-cols-4 gap-8">
@@ -17,9 +23,24 @@ const Footer = () => {
         <div>
           <h4 className="font-semibold mb-2">Recipes</h4>
           <ul className="space-y-1 text-gray-600 text-sm">
-            <li>Breakfast</li>
-            <li>Lunch & Dinner</li>
-            <li>Desserts</li>
+            <li
+              className="cursor-pointer hover:text-blue-500"
+              onClick={() => goToCategory("Breakfast")}
+            >
+              Breakfast
+            </li>
+            <li
+              className="cursor-pointer hover:text-blue-500"
+              onClick={() => goToCategory("Dinner")}
+            >
+              Lunch & Dinner
+            </li>
+            <li
+              className="cursor-pointer hover:text-blue-500"
+              onClick={() => goToCategory("Dessert")}
+            >
+              Desserts
+            </li>
           </ul>
         </div>
 
@@ -27,15 +48,21 @@ const Footer = () => {
         <div>
           <h4 className="font-semibold mb-2">Categories</h4>
           <ul className="space-y-1 text-gray-600 text-sm">
-            <li>Chinese</li>
-            <li>African</li>
-            <li>Italian</li>
-            <li>Vegetarian</li>
+            {["Chinese", "African", "Italian", "Vegetarian"].map((cat) => (
+              <li
+                key={cat}
+                className="cursor-pointer hover:text-blue-500"
+                onClick={() => goToCategory(cat)}
+              >
+                {cat}
+              </li>
+            ))}
           </ul>
         </div>
 
         {/* Company */}
         <div>
+          <h4 className="font-semibold mb-2">Company</h4>
           <ul className="space-y-1 text-gray-600 text-sm">
             <li>
               <Link to="/about" className="hover:text-blue-500">
@@ -47,9 +74,14 @@ const Footer = () => {
                 Contact
               </Link>
             </li>
-            <li>Terms of Use</li>
+            <li>
+              <Link to="/terms" className="hover:text-blue-500">
+                Terms of Use
+              </Link>
+            </li>
           </ul>
         </div>
+
       </div>
 
       <p className="text-center text-gray-500 text-sm mt-8">
