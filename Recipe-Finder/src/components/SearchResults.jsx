@@ -61,12 +61,13 @@ const SearchResults = () => {
           <button
             key={cat}
             onClick={() => setSelectedCategory(cat)}
-            className={`px-4 py-2 rounded-full border text-sm font-medium transition
-              ${
-                selectedCategory === cat
-                  ? "bg-blue-500 text-white"
-                  : "bg-white text-gray-700 hover:bg-gray-100"
-              }`}
+            className={`px-5 py-2 rounded-full border text-sm font-medium transition-all
+  ${
+    selectedCategory === cat
+      ? "bg-blue-500 text-white shadow"
+      : "bg-white text-gray-700 hover:bg-blue-50"
+  }`}
+
           >
             {cat}
           </button>
@@ -80,14 +81,18 @@ const SearchResults = () => {
         <div className="grid gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
           {results.map((recipe) => (
             <div
-              key={recipe.idMeal}
-              className="relative bg-white rounded-lg shadow-md overflow-hidden"
-            >
+  key={recipe.idMeal}
+  className="relative bg-white rounded-xl shadow-md overflow-hidden
+  hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
+>
+
               {/* Favorite Button */}
-              <button
-                onClick={() => toggleFavorite(recipe.idMeal)}
-                className="absolute top-3 right-3 text-2xl"
-              >
+             <button
+  onClick={() => toggleFavorite(recipe.idMeal)}
+  className="absolute top-3 right-3 text-2xl bg-white rounded-full p-1
+  shadow hover:scale-110 transition"
+>
+
                 {favorites.includes(recipe.idMeal) ? "❤️" : "🤍"}
               </button>
 
