@@ -1,30 +1,41 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { getMealById } from "./api"; // <-- use API helper
 
 const RecipeDetails = () => {
   const { id } = useParams();
   const [recipe, setRecipe] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch(`https://www.themealdb.com/api/json/v1/1/lookup.php?i=${id}`)
-      .then((res) => res.json())
-      .then((data) => setRecipe(data.meals[0]))
-      .catch((err) => console.error(err));
+    const fetchRecipe = async () => {
+      try {
+        const data = await getMealById(id); // fetch via api.js
+        setRecipe(data);
+      } catch (error) {
+        console.error("Error fetching recipe:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchRecipe();
   }, [id]);
 
-  if (!recipe) {
+  if (loading) {
     return <p className="text-center mt-20">Loading recipe...</p>;
   }
 
-  // Build ingredients array
-  const ingredients = [];
-  for (let i = 1; i <= 20; i++) {
-    const ingredient = recipe[`strIngredient${i}`];
-    const measure = recipe[`strMeasure${i}`];
-    if (ingredient) {
-      ingredients.push(`${measure} ${ingredient}`);
-    }
+  if (!recipe) {
+    return <p className="text-center mt-20">Recipe not found.</p>;
   }
+
+  // Build ingredients array dynamically
+  const ingredients = Array.from({ length: 20 }, (_, i) => {
+    const ingredient = recipe[`strIngredient${i + 1}`];
+    const measure = recipe[`strMeasure${i + 1}`];
+    return ingredient ? `${measure} ${ingredient}` : null;
+  }).filter(Boolean);
 
   return (
     <div className="container mx-auto px-6 py-10">
@@ -34,8 +45,6 @@ const RecipeDetails = () => {
         alt={recipe.strMeal}
         className="w-full h-96 object-cover rounded-lg mb-6"
       />
-      <p className="text-gray-700 mb-6">{recipe.strInstructions}</p>
-
       <div className="mb-6">
         <h2 className="text-2xl font-semibold mb-3">Ingredients</h2>
         <ul className="list-disc list-inside text-gray-700">
@@ -43,6 +52,10 @@ const RecipeDetails = () => {
             <li key={idx}>{ing}</li>
           ))}
         </ul>
+      </div>
+      <div>
+        <h2 className="text-2xl font-semibold mb-3">Instructions</h2>
+        <p className="text-gray-700 whitespace-pre-line">{recipe.strInstructions}</p>
       </div>
     </div>
   );

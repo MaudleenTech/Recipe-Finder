@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import CategoryCard from "./CategoryCard";
-import { Link } from "react-router-dom";
-
+import { getRandomMeals, searchMeals } from "./api"; // import API functions
 
 const HomePage = () => {
   const navigate = useNavigate();
@@ -10,28 +9,29 @@ const HomePage = () => {
   const [featuredRecipes, setFeaturedRecipes] = useState([]);
   const [trendingRecipes, setTrendingRecipes] = useState([]);
 
-  // Fetch featured recipes from TheMealDB
+  // Fetch Featured Recipes (e.g., Seafood)
   useEffect(() => {
-    fetch("https://www.themealdb.com/api/json/v1/1/filter.php?c=Seafood")
-      .then((res) => res.json())
-      .then((data) => setFeaturedRecipes(data.meals.slice(0, 3))) // take first 3 meals
-      .catch((err) => console.error(err));
+    const fetchFeatured = async () => {
+      try {
+        const featured = await fetch(
+          `https://www.themealdb.com/api/json/v1/1/filter.php?c=Seafood&apikey=${import.meta.env.VITE_API_KEY}`
+        ).then((res) => res.json());
+        setFeaturedRecipes(featured.meals.slice(0, 3));
+      } catch (err) {
+        console.error("Error fetching featured meals:", err);
+      }
+    };
+    fetchFeatured();
   }, []);
-  // Fetch Trending Recipes
+
+  // Fetch Trending Recipes (Random)
   useEffect(() => {
     const fetchTrending = async () => {
       try {
-        const promises = [
-          fetch("https://www.themealdb.com/api/json/v1/1/random.php").then((r) => r.json()),
-          fetch("https://www.themealdb.com/api/json/v1/1/random.php").then((r) => r.json()),
-          fetch("https://www.themealdb.com/api/json/v1/1/random.php").then((r) => r.json()),
-        ];
-
-        const results = await Promise.all(promises);
-
-        setTrendingRecipes(results.map((meal) => meal.meals[0]));
-      } catch (error) {
-        console.error("Error fetching trending meals:", error);
+        const randomMeals = await getRandomMeals(3); // use api.js helper
+        setTrendingRecipes(randomMeals);
+      } catch (err) {
+        console.error("Error fetching trending meals:", err);
       }
     };
     fetchTrending();
@@ -84,7 +84,7 @@ const HomePage = () => {
         </div>
       </section>
 
-      {/* Featured Categories */}
+      {/* Featured Recipes */}
       <section className="container mx-auto py-16 px-6">
         <h2 className="text-3xl font-bold text-gray-800 mb-8">
           Featured Recipes
@@ -101,7 +101,7 @@ const HomePage = () => {
         </div>
       </section>
 
-      {/* Trending Recipes Section */}
+      {/* Trending Recipes */}
       <section className="container mx-auto pb-16 px-6">
         <h2 className="text-3xl font-bold text-gray-800 mb-8">Trending Recipes</h2>
         <div className="grid gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
