@@ -11,6 +11,9 @@ const SearchResults = () => {
   const [selectedCategory, setSelectedCategory] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [favorites, setFavorites] = useState(
+    JSON.parse(localStorage.getItem("favorites")) || []
+  );
 
   useEffect(() => {
     if (!query && !selectedCategory) return;
@@ -24,14 +27,23 @@ const SearchResults = () => {
 
     fetch(url)
       .then((res) => res.json())
-      .then((data) => {
-        setResults(data.meals || []);
-      })
-      .catch(() => {
-        setError("Failed to load recipes. Please try again.");
-      })
+      .then((data) => setResults(data.meals || []))
+      .catch(() => setError("Failed to load recipes. Please try again."))
       .finally(() => setLoading(false));
   }, [query, selectedCategory]);
+
+  const toggleFavorite = (id) => {
+    let updatedFavorites;
+
+    if (favorites.includes(id)) {
+      updatedFavorites = favorites.filter((fav) => fav !== id);
+    } else {
+      updatedFavorites = [...favorites, id];
+    }
+
+    setFavorites(updatedFavorites);
+    localStorage.setItem("favorites", JSON.stringify(updatedFavorites));
+  };
 
   return (
     <div className="container mx-auto px-6 py-10">
@@ -61,38 +73,43 @@ const SearchResults = () => {
         ))}
       </div>
 
-      {/* Loading */}
-      {loading && <p className="text-lg">Loading recipes...</p>}
-
-      {/* Error */}
+      {loading && <p>Loading recipes...</p>}
       {error && <p className="text-red-500">{error}</p>}
 
-      {/* Results */}
       {!loading && results.length > 0 && (
         <div className="grid gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
           {results.map((recipe) => (
-            <Link
+            <div
               key={recipe.idMeal}
-              to={`/recipe/${recipe.idMeal}`}
-              className="block bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition"
+              className="relative bg-white rounded-lg shadow-md overflow-hidden"
             >
-              <img
-                src={recipe.strMealThumb}
-                alt={recipe.strMeal}
-                className="w-full h-48 object-cover"
-              />
-              <div className="p-4">
-                <h2 className="text-lg font-semibold text-gray-800">
-                  {recipe.strMeal}
-                </h2>
-              </div>
-            </Link>
+              {/* Favorite Button */}
+              <button
+                onClick={() => toggleFavorite(recipe.idMeal)}
+                className="absolute top-3 right-3 text-2xl"
+              >
+                {favorites.includes(recipe.idMeal) ? "❤️" : "🤍"}
+              </button>
+
+              <Link to={`/recipe/${recipe.idMeal}`}>
+                <img
+                  src={recipe.strMealThumb}
+                  alt={recipe.strMeal}
+                  className="w-full h-48 object-cover"
+                />
+                <div className="p-4">
+                  <h2 className="text-lg font-semibold text-gray-800">
+                    {recipe.strMeal}
+                  </h2>
+                </div>
+              </Link>
+            </div>
           ))}
         </div>
       )}
 
       {!loading && results.length === 0 && !error && (
-        <p className="text-gray-700 text-lg">No recipes found.</p>
+        <p className="text-gray-700">No recipes found.</p>
       )}
     </div>
   );
