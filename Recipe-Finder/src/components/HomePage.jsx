@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import CategoryCard from "./CategoryCard";
-import { getRandomMeals, searchMeals } from "../api"; // import API functions
+import { getRandomMeals } from "../api";
 
 const HomePage = () => {
   const navigate = useNavigate();
@@ -9,18 +9,20 @@ const HomePage = () => {
   const [featuredRecipes, setFeaturedRecipes] = useState([]);
   const [trendingRecipes, setTrendingRecipes] = useState([]);
 
-  // Fetch Featured Recipes (e.g., Seafood)
+  // Fetch Featured Recipes (Seafood)
   useEffect(() => {
     const fetchFeatured = async () => {
       try {
-        const featured = await fetch(
-          `https://www.themealdb.com/api/json/v1/1/filter.php?c=Seafood&apikey=${import.meta.env.VITE_API_KEY}`
-        ).then((res) => res.json());
-        setFeaturedRecipes(featured.meals.slice(0, 3));
+        const res = await fetch(
+          "https://www.themealdb.com/api/json/v1/1/filter.php?c=Seafood"
+        );
+        const data = await res.json();
+        setFeaturedRecipes(data.meals.slice(0, 3));
       } catch (err) {
         console.error("Error fetching featured meals:", err);
       }
     };
+
     fetchFeatured();
   }, []);
 
@@ -28,12 +30,13 @@ const HomePage = () => {
   useEffect(() => {
     const fetchTrending = async () => {
       try {
-        const randomMeals = await getRandomMeals(3); // use api.js helper
-        setTrendingRecipes(randomMeals);
+        const meals = await getRandomMeals(3);
+        setTrendingRecipes(meals);
       } catch (err) {
         console.error("Error fetching trending meals:", err);
       }
     };
+
     fetchTrending();
   }, []);
 
@@ -46,7 +49,6 @@ const HomePage = () => {
 
   return (
     <div className="bg-gray-50 min-h-screen">
-
       {/* Hero Section */}
       <section className="relative">
         <img
@@ -54,19 +56,18 @@ const HomePage = () => {
           alt="Hero"
           className="w-full h-[600px] object-cover"
         />
+
         <div className="absolute inset-0 bg-black bg-opacity-30 flex flex-col justify-center items-center text-center text-white px-6">
           <h1 className="text-4xl md:text-5xl font-bold mb-4">
             Discover Delicious Recipes from Around the World
           </h1>
+
           <p className="text-lg md:text-xl max-w-2xl mb-6">
             Explore thousands of recipes, get inspired by our collections, and cook like a pro!
           </p>
 
           {/* Search Bar */}
-          <form
-            onSubmit={handleSearch}
-            className="flex w-full max-w-xl mx-auto"
-          >
+          <form onSubmit={handleSearch} className="flex w-full max-w-xl mx-auto">
             <input
               type="text"
               value={query}
@@ -89,10 +90,12 @@ const HomePage = () => {
         <h2 className="text-3xl font-bold text-gray-800 mb-8">
           Featured Recipes
         </h2>
+
         <div className="grid gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
           {featuredRecipes.map((recipe) => (
             <CategoryCard
               key={recipe.idMeal}
+              id={recipe.idMeal}
               image={recipe.strMealThumb}
               title={recipe.strMeal}
               description="Delicious meal from TheMealDB"
@@ -103,11 +106,15 @@ const HomePage = () => {
 
       {/* Trending Recipes */}
       <section className="container mx-auto pb-16 px-6">
-        <h2 className="text-3xl font-bold text-gray-800 mb-8">Trending Recipes</h2>
+        <h2 className="text-3xl font-bold text-gray-800 mb-8">
+          Trending Recipes
+        </h2>
+
         <div className="grid gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
           {trendingRecipes.map((meal) => (
             <CategoryCard
               key={meal.idMeal}
+              id={meal.idMeal}
               image={meal.strMealThumb}
               title={meal.strMeal}
               description="Currently trending recipe"

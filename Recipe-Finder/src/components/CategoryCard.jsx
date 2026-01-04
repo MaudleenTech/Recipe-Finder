@@ -1,15 +1,23 @@
-import React from "react";
+import { Link } from "react-router-dom";
 
-const CategoryCard = ({ image, title, description }) => {
+const CategoryCard = ({ image, title, description, id }) => {
   return (
-    <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300">
-      <img src={image} alt={title} className="w-full h-48 object-cover" />
+    <div className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition">
+      <img
+        src={image}
+        alt={title}
+        className="w-full h-48 object-cover"
+      />
       <div className="p-4">
-        <h3 className="text-lg font-semibold text-gray-800">{title}</h3>
-        <p className="text-gray-600 mt-2">{description}</p>
-        <button className="mt-4 text-blue-500 font-medium hover:underline">
+        <h3 className="text-lg font-semibold mb-2">{title}</h3>
+        <p className="text-gray-600 text-sm mb-4">{description}</p>
+
+        <Link
+          to={`/recipe/${id}`}
+          className="text-blue-500 font-semibold hover:underline"
+        >
           View Recipe →
-        </button>
+        </Link>
       </div>
     </div>
   );
