@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import CategoryCard from "./CategoryCard";
-import { getRandomMeals, searchMeals } from "./api"; // import API functions
+import { getRandomMeals, searchMeals } from "../api"; // import API functions
 
 const HomePage = () => {
   const navigate = useNavigate();

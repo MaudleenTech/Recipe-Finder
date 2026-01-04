@@ -7,6 +7,8 @@ import RecipeDetails from "./components/RecipeDetails";
 import AboutUs from "./components/AboutUs";
 import Contact from "./components/Contact";
 import Terms from "./components/Terms";
+import Favorites from "./pages/Favorites";
+
 
 function App() {
   return (
@@ -20,6 +22,8 @@ function App() {
         <Route path="/about" element={<AboutUs />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/terms" element={<Terms />} />
+        <Route path="/favorites" element={<Favorites />} />
+
       </Routes>
 
       <Footer />

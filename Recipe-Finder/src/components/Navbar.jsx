@@ -28,6 +28,14 @@ const Navbar = () => {
           >
             Contact
           </Link>
+
+          <Link
+  to="/favorites"
+  className="hover:text-blue-500 transition font-medium"
+>
+  ❤️ Favorites
+</Link>
+
         </div>
 
       </div>
